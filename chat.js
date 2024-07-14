@@ -7,11 +7,12 @@ let interactionTimeout; // 상호작용 타이머
 window.onload = function() {
     navigator.mediaDevices.getUserMedia({ video: true })
     .then(stream => {
-        setInterval(() => captureFrame(stream), 10000); //나이 감지 : 10초
+        setInterval(() => captureFrame(stream), 10000); // 10초마다 나이 감지
     }).catch(err => console.error("Failed to access video device", err));
 
     resetInteractionTimeout(); // 페이지 로드 시 타이머 시작
 };
+
 function toggleRecording() {
     if (!isActive) {
         startRecording();
@@ -20,7 +21,6 @@ function toggleRecording() {
     } else {
         stopRecording();
         document.getElementById("toggleBtn").textContent = "녹음 시작";
-        // 녹음 종료 후 타이머 재설정은 녹음 종료와 응답 처리가 모두 완료된 후에 실행
     }
     isActive = !isActive;
 }
@@ -66,11 +66,33 @@ function sendAudioToServer() {
         })
         .then(response => response.json())
         .then(data => {
-            document.getElementById("response").textContent = data.message;
-            speak(data.message);
+            handleServerResponse(data);
         })
         .catch(error => console.error("Error:", error));
     }
+}
+
+function summarizeText(text) {
+    if (text.length <= 300) {
+        return text; // 300자 이하면 그대로 반환
+    } else {
+        const sentences = text.match(/[^.!?]+[.!?]+/g) || []; // 문장 단위로 분리
+        let summary = '';
+        for (let sentence of sentences) {
+            if ((summary + sentence).length <= 300) {
+                summary += sentence; // 300자를 넘지 않을 때까지 문장 추가
+            } else {
+                break; // 300자를 초과하면 중단
+            }
+        }
+        return summary; // 합산된 문자열 반환
+    }
+}
+
+function handleServerResponse(data) {
+    const processedMessage = summarizeText(data.message);
+    document.getElementById("response").textContent = processedMessage;
+    speak(processedMessage);
 }
 
 function speak(message) {
@@ -90,10 +112,9 @@ function resetInteractionTimeout() {
     clearTimeout(interactionTimeout);
     interactionTimeout = setTimeout(function () {
         window.location.href = "robot.html";
-    }, 5000);
+    }, 10000); // 10초 후에 robot.html로 이동
 }
 
-// 나이 측정 및 화면 출력 로직이 포함된 captureFrame 함수
 function captureFrame(stream) {
     const video = document.createElement('video');
     video.srcObject = stream;
@@ -112,7 +133,7 @@ function captureFrame(stream) {
     .then(response => response.json())
     .then(data => {
         detectedAge = data.age;
-        document.getElementById('age').textContent = 'Detected Age: ' + detectedAge;
+        //document.getElementById('age').textContent = 'Detected Age: ' + detectedAge;
     })
     .catch(error => console.error('Error in age detection:', error));
 }
