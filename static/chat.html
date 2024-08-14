@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Information Robot</title>
+    <script src="/static/js/adapter.min.js"></script> <!-- WebRTC Adapter -->
+    <link rel="stylesheet" href="static/chat.css" />
+    <script src="static/chat.js"></script> 
+    
+  </head>
+  <body>
+    <script src="static/chat.js"></script> 
+    <button id="toggleBtn" onclick="toggleRecording()">녹음 시작</button>
+    <p id="age"></p>
+    <p id="transcript"></p>
+    <p id="response"></p>
+    <audio id="responseAudio" style="display: none"></audio>
+  </body>
+</html>
