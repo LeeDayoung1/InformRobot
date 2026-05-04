@@ -1,11 +1,11 @@
 <div align="center">
 
-<img src="assets/robot.png" width="600"/>
-
 # InformRobot
 
 ### 얼굴인식을 활용한 연령별 대응 로봇 시스템
 
+
+<img src="assets/robot.png" width="600"/>
 </div>
 
 <br/>
